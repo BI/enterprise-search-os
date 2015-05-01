@@ -1,0 +1,25 @@
+@import ../mixins
+
+table#result-table
+  border-bottom: 1px solid $mid-gray
+  th, td
+    padding: 6px 6px
+    border-left: 1px solid $mid-gray
+    border-right: 1px solid $mid-gray
+  th
+    padding: 0 6px
+    background-color: $mid-gray
+
+  td.nowrap
+    white-space: nowrap
+
+  th.sorted
+    background-color: #c3c3c3
+    border-left : 1px solid #c3c3c3
+    border-right : 1px solid #c3c3c3
+  td.sorted
+    background-color: #e5e5e5
+  tr
+    &:nth-child(even)
+      background-color: $lite-gray
+

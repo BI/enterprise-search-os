@@ -1,0 +1,29 @@
+- mlt_doc = @results.variables[:mlt_doc]
+- if mlt_doc || !selected_facet_items.empty?
+
+  #facet-feedback
+    - unless mlt_doc.blank? # set in Es.params_to_vars
+      p
+        a#remove-result-like.line-through href=mlt_doc._id title='Remove Like'
+          b
+            ' Like:
+        a.mlt-selected href=mlt_doc._id title="Remove #{mlt_doc.title}"
+          = mlt_doc.title
+          = "'s #{mlt_doc.progress_year} #{mlt_doc.text_type.titlecase}" if mlt_doc.text_type
+          span
+            |  X
+
+    - unless selected_facet_items.blank?
+      p
+        a#remove-all-facets.line-through href='#' title='Remove all facets'
+          b
+            ' Filters:
+
+        - selected_facet_items.each do |name, items|
+
+          - items.each do |item|
+
+            | &nbsp;&gt;&nbsp;
+            a.selected-term href="facets[#{name}][]=#{item}" title=facet_item_title('Remove', name, item)
+              => facet_item_label(name, item)
+              span X

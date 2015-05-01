@@ -1,0 +1,64 @@
+ANCHORS:
+- &search_query
+  query:
+    bool:
+      must:
+      - query_string:
+          default_operator: AND
+          query: <<q= '*' >>
+      - more_like_this:
+          like_text: <<like_text= ~ >>
+          fields: <<like_fields= ~ >>
+      - << _filter_facet_terms= ~ >>
+
+### Partials ###
+
+_filter_facet_terms:
+  term:
+    <<facet_hash>>
+
+### Templates ###
+
+search_facets:
+- highlight:
+    fields:
+      title: {}
+      project_text: {}
+
+  facets:
+    <% Settings.an_index.facets.keys.each do |name| %>
+    <%= name %>:
+      terms:
+        field: <%= name %>
+        size: <%= Settings.an_index.facet_panel.max_terms_per_facet %>
+    <% end %>
+
+  <<: *search_query
+
+- type: text
+  params:
+    search_type: dfs_query_then_fetch
+
+
+
+search_results:
+- query:
+    terms:
+      _id: <<ids>>
+
+
+# used for count
+search:
+- *search_query
+- type: text
+
+
+# used for count
+search_projects:
+- query:
+    has_child:
+      type: text
+      <<: *search_query
+
+- type: project
+

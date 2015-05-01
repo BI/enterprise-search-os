@@ -1,0 +1,8 @@
+<% if @query_feedback.blank? %>
+  window.facetSearchPanel.queryOK = false;
+  $('#query-feedback').html('<b>Query Error! Please, edit your input.</b>').css('color', 'red');
+<% else %>
+  window.facetSearchPanel.queryOK = true;
+  $('#query-feedback').html('<%=j render "searches/#{params[:searched_index]}/query_feedback" %>').css('color', 'black');
+  PieSparkline.apply($('.feedback-pie'));
+<% end %>

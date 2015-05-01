@@ -1,0 +1,24 @@
+#result-panel
+
+  .result-panel-toolbar.panel-toolbar
+
+    label.inline style='margin-left:0;'
+      => results_label(@results.collection.total_count)
+      | Found
+
+  table#result-table
+    tr
+      - Settings.query_fields.each do |name, attrs|
+        th class=(sorted_class(name))
+          - href, icon = sort_items(name)
+          a.result-sort href=(href) == icon
+          | &nbsp;
+          span.result-label == attrs['label']
+
+    - @results.collection.each do |doc|
+      tr
+        td class=(sorted_class('fied_one')) = doc.field_one || 'N/A'
+        td class=(sorted_class('fied_two')) = doc.field_two || 'N/A'
+
+
+

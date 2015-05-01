@@ -1,0 +1,54 @@
+@import ../mixins
+
+div.outer
+  margin-left: auto
+  margin-right: auto
+
+div.outer div
+  float: left
+  position: relative
+
+div#notice, div#top
+  width: 100%
+  margin-top: 10px
+  margin-bottom: 10px
+
+ul li
+  list-style-type: none
+  padding-left: 0
+
+.panel-toolbar
+  border-bottom: 1px dotted $mid-gray
+  color: gray
+  float: none !important
+  padding-bottom: 4px
+  padding-right: 6px
+  padding-left: 6px
+  text-align: right
+  margin-bottom: 25px
+
+.panel-button
+  cursor: pointer
+
+label.inline
+  float: left
+
+#summary fieldset .form-row ul
+  margin: 0px
+
+#summary fieldset .form-row ul li
+  margin-bottom: 2px
+
+#summary fieldset div.form-row label
+  cursor: auto
+
+em
+  background-color: yellow
+  padding-left: 3px
+  padding-right: 3px
+
+div#spinner
+  position: fixed
+  left: 50%
+  top: 30%
+

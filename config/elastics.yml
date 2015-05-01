@@ -1,0 +1,94 @@
+ANCHORS:
+- &keyword
+  type: string
+  analyzer: keyword
+
+- &nested
+  type: nested
+  include_in_parent: true
+
+- &highlighted
+  type: string
+  term_vector: with_positions_offsets
+
+- &date
+  type: date
+  ignore_malformed: true
+
+- &integer
+  type: integer
+
+- &content_index_settings
+  index:
+    mapping:
+      attachment:
+        indexed_chars: -1
+
+- &search_index_settings
+  number_of_shards: 5
+  number_of_replicas: 1
+  analysis:
+    analyzer:
+      plain_text:
+        tokenizer: standard
+        filter: [lowercase , stop]
+
+- &dynamic_templates
+  <% %w[date integer short long float double].each do |type| %>
+  - <%= type %>_suggestion:
+      match: '*'
+      match_mapping_type: <%= type %>
+      mapping:
+        type: multi_field
+        fields:
+          "{name}":
+            type: "{dynamic_type}"
+            index: analyzed
+          suggestion:
+            type: string
+            index: not_analyzed
+  <% end %>
+
+
+# indexes for all the content in the attachment (must fit in memory)
+
+# index for reeis content search
+website:
+  settings: *content_index_settings
+
+# index for an_index search
+an_index:
+  settings: *search_index_settings
+
+  mappings:
+
+    text:
+      # all the date or numeric properties for the 'text' type are multi_field types: we add a .suggestion field that is a not analyzed string
+      # we use it in order to match dates and numbers as strings when the user types in a field (and we AJAX-query the suggestion)
+      dynamic_templates: *dynamic_templates
+
+      properties:
+        field_one:                 *integer
+        field_two :                *integer
+        range_field:               *integer
+
+    description:
+      properties:
+        description:  *keyword
+
+# index for another_index search
+another_index:
+  settings: *search_index_settings
+
+  mappings:
+
+    report:
+
+      dynamic_templates: *dynamic_templates
+
+      properties:
+        field_one:                *integer
+        field_two:                *integer
+        report_due:               *date
+
+# index for user_data doesn't need to get defined here

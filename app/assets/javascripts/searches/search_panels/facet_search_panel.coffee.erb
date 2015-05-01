@@ -1,0 +1,98 @@
+window.FacetSearchPanel = class FacetSearchPanel extends BaseSearchPanel
+
+  constructor: ->
+    super $('#search-panel')
+    @advancedFlag   = @panel.find('#advanced_search_flag').val()
+    @treeDiv        = @panel.find('#advanced-search-tree')
+    @queryOK        = true
+    @init()
+
+
+  init: ->
+    @queryFeedback()
+
+    if @advancedFlag == 'advanced'
+      queryTree.tree.redraw()
+      queryTree.setStatus()
+      @queryField.css('background-color', '#EEEEEE')
+      @queryField.attr('title', 'Advanced Query String')
+      @queryField.attr('readonly', true)
+
+    @panel.find('#reset-button').click ->
+      window.location.href = window.resetPath
+    @panel.find('#submit-search').click =>
+      @submit()
+
+    @form.keypress (e) =>
+      if e.which == 13
+        @submit()
+
+    @form.dirtyFields(
+      denoteDirtyForm: true,
+      denoteDirtyOptions: false,
+      formChangeCallback: (isDirty,dirtyFieldsArray) ->
+
+    @queryField.change => @queryFeedback()
+    @queryField.autosize()
+
+
+  removeAllFacetTerms: ->
+    @form.find('.hidden-facet-term-field').remove()
+
+
+  removeHiddenField: (name, value) ->
+    @form.find("input[name=\"#{name}\"][value=\"#{value}\"]").remove()
+
+
+  resetFacetGroup: (name) ->
+    @form.find("input[name=\"#{name}\"]").remove()
+    @submit()
+
+  addHiddenField: (name, value) ->
+    $('<input>').attr(type: 'hidden', name: name, value: value).appendTo(@form)
+
+
+  reorderResults: (value) ->
+    @form.find("input[name=\"sort\"]").remove()
+    @addHiddenField('sort', value)
+    @submit()
+
+
+  submit: ->
+    @queryFeedback(=> @form.submit())
+
+
+  submitTo: (path) ->
+    form = @cloneForm('submit-to-form')
+    form.attr('action', path)
+    @queryFeedback(=> form.submit())
+
+
+  # check the query syntax and updates the query feedback, optionally executing the onSuccess function if the query is OK
+  queryFeedback: (onSuccess) ->
+    form = @cloneForm('query-feedback-form')
+    form.attr('action', window.queryFeedbackPath)
+        .attr('data-remote', 'true')
+        .on('ajax:success', => onSuccess() if @queryOK && onSuccess?)
+        .on('ajax:complete', -> form.remove())
+        .submit()
+    false
+
+
+  cloneForm: (id='cloned-form') ->
+    @queryField.html @queryField.val()
+    form = @form.clone().attr('id', id)
+    form.find('input[name^="advanced_search_"]').remove() # no need to pass that big strings
+    form.addClass('hidden')
+    form.appendTo('body')
+    form
+
+
+  updateQueryField: (query) ->
+    @queryField.val query
+    @queryField.change()
+    @queryField.trigger('autosize')
+
+
+$ ->
+  window.facetSearchPanel = new FacetSearchPanel

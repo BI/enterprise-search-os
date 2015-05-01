@@ -1,0 +1,81 @@
+window.ClauseInput = class ClauseInput
+
+  constructor: (node, nodeSpan) ->
+    @input             = $(nodeSpan).find('.clause-input')
+    @item_field_menu   = $(nodeSpan).find('.item-field-menu')
+    @bad_term_feedback = $('#bad-term-feedback').css('color', 'red')
+
+    query = node.data.query
+
+    if query.clause == 'QUERY'
+      @input.val query.terms[0]
+      @input.autosize()
+      @input.change =>
+        query.terms = [@input.val()]
+        queryTree.update()
+    else
+      # enable the filter, after the init
+      @input.bind 'ready', =>
+        @input.textext()[0]._opts.filter.enabled = query.filterEnabled()
+
+      input = @input
+
+      @input.textext
+        plugins: 'tags prompt filter autocomplete ajax'
+        tags:
+          items: query.terms
+        prompt: query.prompt()
+        ajax:
+          url: "#{window.suggestPath}#{query.field}"
+          dataType: 'json'
+          typeDelay: 0.6
+          loadingMessage: 'Loading terms...'
+          loadingDelay: 0.2
+
+        ext:
+          ajax:
+            load: (query) ->
+              # checking the input.val() is needed because sometimes the load() is fired with an empty query
+              # even with some value in the field. Probably a problem of textext, but the workaround is simple.
+              if query == '' and input.val() == ''
+                this.trigger('hideDropdown')
+              else
+                $.fn.textext.TextExtAjax.prototype.load.apply(this, arguments)
+
+        # disable the filter, or the items don't get loaded
+        filter:
+          enabled: false
+        autocomplete:
+          enabled: query.autocompleteEnabled()
+          dropdown:
+            maxHeight: '200px'
+
+      @input.bind 'isTagAllowed', (e, data) =>
+        if query.noMoreTags()
+          data.result = false
+          @bad_term_feedback.html "No more terms accepted by this clause. The term has been removed!"
+          @bad_term_feedback.fadeIn('slow').delay(3000).fadeOut('slow')
+        else
+          val = @input.val().toLowerCase()
+          return if val == ''
+          unless @input.textext()[0].filter().isValueAllowed(val)
+            field = @item_field_menu.text()
+            @bad_term_feedback.html "No term <b>#{val}</b> found in <b>#{field}</b>. The term has been removed!"
+            @bad_term_feedback.fadeIn('slow').delay(3000).fadeOut('slow')
+
+      @input.bind 'setFormData', (e, data) =>
+        # only when data changes (does not trigger it on any keypress)
+        if query.terms.join() != data.join()
+          query.terms = data
+          queryTree.update()
+          query.containerFeedback(node)
+          @input.textext()[0].prompt().setPrompt(query.prompt())
+
+      # manual handling of adding tags or filtering on blur
+      @input.blur =>
+        unless @input.val() == ''
+          @input.textext()[0].tags().addTags([ @input.val() ])
+          @input.val('')
+
+      # disable the input for example when a RANGE clause has 2 terms
+      #@input.attr('disabled', query.disabled())

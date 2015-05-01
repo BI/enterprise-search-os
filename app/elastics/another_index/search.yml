@@ -1,0 +1,68 @@
+ANCHORS:
+- &search_query
+  query:
+    bool:
+      must:
+      - query_string:
+          default_operator: AND
+          query: <<q= '*' >>
+      - << _filter_facet_terms= ~ >>
+      - << _filter_facet_ranges= ~ >>
+
+### Partials ###
+
+_filter_facet_terms:
+  term:
+    <<facet_hash>>
+
+_filter_facet_ranges:
+  range:
+    <<range_field>>:
+      <<facet_hash>>
+
+### Templates ###
+
+search_facets:
+- highlight:
+    fields:
+      project_title: {}
+
+  facets:
+    <% Settings.another_index.facets.keys.each do |name| %>
+    <%= name %>:
+      terms:
+        field: <%= name %>
+        size: <%= Settings.another_index.facet_panel.max_terms_per_facet %>
+        order: <%= Settings.another_index.facets[name]['order'] || 'count' %>
+    <% end %>
+    report_due:
+      range:
+        field:  report_due
+        ranges: << report_due_ranges >>
+
+  <<: *search_query
+
+  sort: <<sort= ~ >>
+
+- type: report
+  params:
+    search_type: dfs_query_then_fetch
+
+
+
+search_results:
+- query:
+    terms:
+      _id: <<ids>>
+
+
+# used for count
+search:
+- *search_query
+- type: report
+
+
+# used for count
+search_projects:
+- *search_query
+- type: report

@@ -1,0 +1,40 @@
+@import ../mixins
+
+#search-panel-container
+  overflow: visible !important // for the suggestion menu
+
+#q
+  +rounded-box
+  width: 700px
+  min-width: 500px
+  resize: none
+  margin-top: 5px
+
+#advanced-search-tree
+  margin-top: 5px
+
+#search-controls
+  +rounded-box
+  position: relative
+  margin-top: 3px
+  background-color: #DDDDDD
+  height: 22px
+  margin-top: 5px
+  min-width: 500px
+
+
+  #query-feedback
+    display: inline-block
+    position: absolute
+    left: 5px
+
+  #query-buttons
+    position: absolute
+    display: inline-block
+    right: 3px
+
+#facet-feedback
+  +rounded-box
+  margin-top: 5px
+  background-color: #EEF0EC
+

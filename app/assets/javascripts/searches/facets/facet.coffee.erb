@@ -1,0 +1,79 @@
+window.Facet = class Facet
+
+  constructor: (@group) ->
+    @cookieName = "#{window.searchedIndex}-facet-panel"
+    @facet_terms_per_group = window.appSettings.facet_panel.facet_terms_per_group
+    @name    = @group.attr('id')
+    @moreBtn = @group.find('.facet-button-more')
+    @lessBtn = @group.find('.facet-button-less')
+    @initVisibleState()
+    @initButtons()
+    @refreshBtns()
+    @initTermLinks()
+    @initFacetResetLinks()
+    @initPies()
+
+
+  initButtons: ->
+    @moreBtn.click =>
+      @hiddenFacetsTerms().slice(0,@facet_terms_per_group).slideDown('slow', => @refreshBtns())
+      @initPies()
+
+    @lessBtn.click =>
+      # leaves always the minimum facet_terms_per_group visible
+      size = Math.min @facet_terms_per_group, @visibleFacetsTerms().size() - @facet_terms_per_group
+      @visibleFacetsTerms().slice(size * -1).slideUp('slow', => @refreshBtns())
+      @initPies()
+
+
+  hiddenFacetsTerms: ->
+    @group.children('li.facet-term').not(':visible')
+
+
+  visibleFacetsTerms: ->
+    @group.children('li.facet-term:visible')
+
+
+  refreshBtns: ->
+    if @visibleFacetsTerms().size() <= @facet_terms_per_group
+      @lessBtn.hide()
+    else
+      @lessBtn.show()
+
+    if @hiddenFacetsTerms().size() == 0
+      @moreBtn.hide()
+    else
+      @moreBtn.show()
+    @updateCookie()
+
+
+  initTermLinks: ->
+    @group.find('li.facet-term a').click ->
+      [name, term] = $(this).attr('href').split('=')
+      if $(this).hasClass('selected-term')
+        facetSearchPanel.removeHiddenField(name, term)
+      else
+        facetSearchPanel.addHiddenField(name, term)
+      facetSearchPanel.submit()
+      false
+
+  initFacetResetLinks: ->
+    @group.find('li.facet-reset a').click ->
+      facetSearchPanel.resetFacetGroup($(this).attr('href'))
+      false
+
+  initVisibleState: ->
+    facetState = $.cookie(@cookieName)[@name]
+    return unless facetState?
+    @group.children('li.facet-term').slice(0, facetState * @facet_terms_per_group).show()
+    @refreshBtns()
+
+
+  updateCookie: ->
+    obj        = $.cookie(@cookieName)
+    obj[@name] = Math.ceil(@visibleFacetsTerms().size() / @facet_terms_per_group)
+    $.cookie(@cookieName, obj)
+
+
+  initPies: ->
+    PieSparkline.apply @group.find('.facet-pie:visible')

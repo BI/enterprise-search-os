@@ -1,0 +1,71 @@
+#facet-panel
+
+  #facet-panel-toolbar.panel-toolbar
+    span#facet-panel-hider.panel-button &#8596; Hide Filters
+    | &nbsp;&nbsp;
+    span#facet-chooser-button.panel-button &#8597; Filter Chooser
+
+    label.inline style='margin-left:0;' Filters
+
+  = render 'searches/facet_chooser'
+  #facets
+    - @results.facets.keys.each do |name|
+      - next if should_skip_facets(@results.facets[name])
+
+      ul.facet id="#{name}_facet"
+        label style='margin-bottom:14px;' = facet_label(name)
+
+        li.facet-reset class=(facet_selected?(name) ? '' : 'hidden')
+          a href="facets[#{name}][]"
+            ' Show All
+            b => Settings.facets[name]['label']
+            | Filters
+
+        - per_group = Settings.facet_panel.facet_terms_per_group
+
+        - facet_type = @results.facets[name]['_type']
+
+        - result_facets = @results.facets[name][facet_type.pluralize]
+        - if facet_type == 'terms' && Settings.facets[name]['custom_order']
+          - result_facets = custom_sort(Settings.facets[name]['custom_order'], result_facets)
+
+
+        - result_facets.each_with_index do |item_hash, i|
+
+          - item = case facet_type
+          -        when /^term$/, /^terms$/ then item_hash['term']
+          -        when /^range$/ then i.to_s
+
+          - count = item_hash['count']
+          / next if count.zero?
+
+          li.facet-term class=(i >= per_group ? 'hidden' : '')
+            span.facet-pie values=([@results['hits']['total'] - count, count].join(','))
+              | &nbsp;
+
+            - if facet_item_selected?(name, item)
+              | &nbsp;
+              a.facet-breadcrumb.selected-term href="facets[#{name}][]=#{item}" title=facet_item_title('Unfilter', name, item)
+                = facet_item_label(name, item)
+                | &nbsp;
+                => "(#{number_with_delimiter count})"
+                span X
+
+            - else
+              - if count.zero?
+                | &nbsp;
+                = facet_item_label(name, item)
+                | &nbsp;
+              - else
+                a href="facets[#{name}][]=#{item}" title=facet_item_title('Filter', name, item)
+                  | &nbsp;
+                  = facet_item_label(name, item)
+                  | &nbsp;
+              = "(#{number_with_delimiter count})"
+
+
+        li.facet-button-container
+          span.facet-button-more.panel-button &#8595;More
+          | &nbsp;
+          span.facet-button-less.panel-button &#8593;Less
+

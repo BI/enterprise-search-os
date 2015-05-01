@@ -1,0 +1,17 @@
+an_index_development: &development
+  adapter: mysql2
+  host: localhost
+  username: root
+  password:
+  database: es
+  encoding: utf8
+
+development: *development
+
+another_index_development: &development
+  adapter: mysql2
+  host: localhost
+  username: root
+  password:
+  database: es
+  encoding: utf8

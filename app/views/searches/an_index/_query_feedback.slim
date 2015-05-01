@@ -1,0 +1,8 @@
+- text_count, project_count = @query_feedback
+b
+  ' Expected Results:
+span.feedback-pie values=([CountCache.get('texts')-text_count,text_count].join(','))
+=< pluralize(number_with_delimiter(text_count), 'result')
+'  in
+span.feedback-pie values=([CountCache.get('projects')-project_count,project_count].join(','))
+=< pluralize(number_with_delimiter(project_count), 'project')

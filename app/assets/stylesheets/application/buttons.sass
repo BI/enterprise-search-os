@@ -1,0 +1,59 @@
+
+// nice green button
+//$btn-base-color:   #7fbf4d
+
+$btn-base-color:   #d87722
+$btn-lite-color:   lighten($btn-base-color, 1%)
+$btn-liter-color:  lighten($btn-base-color, 2%)
+$btn-ulite-color:  lighten($btn-base-color, 3%)
+$btn-dark-color:   darken($btn-base-color, 10%)
+$btn-darker-color: darken($btn-base-color, 20%)
+
+a.saved-button
+
+  background-color: $btn-base-color
+
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $btn-base-color), color-stop(100%, $btn-dark-color))
+  background-image: -webkit-linear-gradient(top, $btn-base-color, $btn-dark-color)
+  background-image: -moz-linear-gradient(top, $btn-base-color, $btn-dark-color)
+  background-image: -ms-linear-gradient(top, $btn-base-color, $btn-dark-color)
+  background-image: -o-linear-gradient(top, $btn-base-color, $btn-dark-color)
+  background-image: linear-gradient(top, $btn-base-color, $btn-dark-color)
+
+  border: 1px solid $btn-dark-color
+  border-bottom: 1px solid $btn-darker-color
+  border-radius: 6px
+
+  -moz-box-shadow:    2px 2px 5px rgba(000,000,000,0.3)
+  -webkit-box-shadow: 2px 2px 5px rgba(000,000,000,0.3)
+  box-shadow:         2px 2px 5px rgba(000,000,000,0.3)
+
+  text-shadow:        -1px -1px 0px rgba(000,000,000,0.3)
+
+  padding: 1px
+  margin: 3px
+  width: 110px
+  display: inline-block
+
+  color: white
+  font: bold 12px/1 Arial, Helvetica, sans-serif
+  padding: 4px
+  text-align: center
+
+a.saved-buttonhover
+  background-color: $btn-liter-color
+
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $btn-liter-color), color-stop(100%, $btn-lite-color))
+  background-image: -webkit-linear-gradient(top, $btn-liter-color, $btn-lite-color)
+  background-image: -moz-linear-gradient(top, $btn-liter-color, $btn-lite-color)
+  background-image: -ms-linear-gradient(top, $btn-liter-color, $btn-lite-color)
+  background-image: -o-linear-gradient(top, $btn-liter-color, $btn-lite-color)
+  background-image: linear-gradient(top, $btn-liter-color, $btn-lite-color)
+
+  border: 1px solid $btn-base-color
+  border-bottom: 1px solid $btn-dark-color
+
+  -moz-box-shadow:    none
+  -webkit-box-shadow: none
+  box-shadow:         none
+  text-decoration:    none

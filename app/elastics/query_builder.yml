@@ -1,0 +1,9 @@
+suggest:
+  - POST
+  - /<<index>>/<<type>>/__suggest
+  - field: <<field= _all >>
+    term: <<q>> # q is hardcoded in textext autocomplete
+    type: full
+    #similarity: <<similarity= 1.0 >>
+    size: <<params.size= 10 >>
+    #analyzer: plain_text

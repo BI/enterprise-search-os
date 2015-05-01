@@ -1,0 +1,4 @@
+- opts = [ ['Reports', root_path(:searched_index => 'another_index')] ]
+- opts << ['Reports (Advanced)', advanced_search_path(:searched_index => 'another_index') ] if Settings.enable_advanced_search
+
+= select_tag :search_type_selector, options_for_select(opts, @search_path)

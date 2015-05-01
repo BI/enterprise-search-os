@@ -1,0 +1,24 @@
+#result-panel
+
+  .result-panel-toolbar
+
+    label.inline style='margin-left:0;margin-bottom:25px;'
+      => number_with_delimiter @results.collection.total_entries
+      | Results Found
+
+  - @results.each do |doc|
+    .hit
+      .content-title
+        a href=doc.url target='_blank'
+          b = (t = doc.highlighted_attachment_title; t.blank? ? doc.attachment_title : t)
+          - author = doc.highlighted_attachment_author
+          == " - #{author}" unless author.blank?
+
+      - sc = doc.highlighted_attachment.truncate(800)
+      .content-text class=not_highlighted_class?(sc) style='width:100%' = sc
+
+      .score
+        div
+          span.result-label Score
+        .bar_container title=(number_to_percentage(doc.score * 100 / @results.raw_result['hits']['max_score'], :precision => 2)) style=("width: #{Settings.css_metric.score_bar_width}px;")
+          .horiz_bar style="width:#{doc.score * Settings.css_metric.score_bar_width / @results.raw_result['hits']['max_score']}px"

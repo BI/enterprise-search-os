@@ -1,0 +1,43 @@
+@import ../mixins
+
+div#facets
+  width: 100%
+
+div#facet-panel
+  width: 100%
+  overflow: hidden
+  padding-right: 15px
+  border-right: 1px $facet-green solid
+  .facet-term
+    white-space: nowrap
+
+a.selected-term, a.mlt-selected
+  background-color: #f1f4ff
+  border: 1px solid $mid-gray
+  border-radius: 3px
+  padding-left: 3px
+  padding-right: 3px
+  &:hover
+    text-decoration: line-through
+  span
+    color: red
+
+#facet-feedback p
+  margin: 3px
+
+a.line-through:hover
+  text-decoration: line-through
+
+.facet-button-container
+  color: grey
+  border-top: 1px dotted $mid-gray
+  text-align: right
+  margin-top: 6px
+
+div#facet-chooser
+  margin-bottom: 25px
+  +gray-box(20px)
+
+
+.facet-reset a
+  color: red

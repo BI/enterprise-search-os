@@ -1,0 +1,33 @@
+window.ResultPanel = class ResultPanel
+
+  constructor: ->
+    @panel              = $('#result-panel')
+    @allFieldsToggleBtn = @panel.find('#all-fields-toggle')
+    @showFacetPanelBtn  = @panel.find('#facet-panel-shower')
+    @initBtns()
+    @refreshBtns()
+
+
+  initBtns: =>
+    @allFieldsToggleBtn.click =>
+      @panel.find('.not-highlighted').slideToggle('slow')
+
+    @showFacetPanelBtn.click =>
+      @panel.parent().css('width', window.appSettings.css_metric.result_panel_width)
+      facetPanel.panel.fadeIn('slow', => @refreshBtns())
+
+
+  refreshBtns: =>
+    if facetPanel.panel.is(':visible')
+      @showFacetPanelBtn.hide()
+    else
+      @showFacetPanelBtn.show()
+
+
+  expand: ->
+    @panel.parent().css('width', '100%')
+    @refreshBtns()
+
+
+$ ->
+  window.resultPanel = new ResultPanel

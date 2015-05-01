@@ -1,0 +1,94 @@
+@import mixins
+
+=menu-border($color)
+  border-left: 1px solid $color
+  border-top: 1px solid $color
+  border-right: 2px solid $color
+  border-bottom: 2px solid $color
+
+=textext-font
+  font: 13px "lucida grande",tahoma,verdana,arial,sans-serif !important
+
+.context-menu-item
+  background-color: white
+  &:hover
+    background-color: $mid-gray
+
+.context-menu-list
+  +menu-border($dark-gray)
+
+.query-item
+  +menu-border($ulite-gray)
+  background-color: $ulite-gray
+  padding-left: 2px
+  padding-right: 2px
+  cursor: pointer
+  vertical-align: top
+  position: relative
+
+.group-clause-menu
+  +menu-border($lite-gray)
+  background-color: $lite-gray
+
+div.text-core, .clause-input
+  display: block
+  margin-top: 5px
+
+.hovered-query-item
+  +menu-border($dark-gray)
+  background-color: white
+
+.clause-container
+  +rounded-box
+  display: inline-block
+  margin-top: 3px
+  margin-bottom: 2px
+  width: 480px
+  background-color: $ulite-gray
+
+.clause-input
+  +rounded-box
+  width: 472px
+  resize: none
+
+.text-core .text-wrap .text-tags .text-tag .text-button a.text-remove
+  padding: 0
+  border: none
+
+.text-core .text-wrap textarea, .text-core .text-wrap input
+  +textext-font
+  border: 1px solid $ulite-gray !important
+
+.text-core .text-wrap
+  background: none !important
+  padding-top: 0 !important
+
+.text-core .text-wrap .text-prompt
+  +textext-font
+  color: $mid-gray !important
+
+.text-core .text-wrap .text-tags .text-tag .text-button
+  +textext-font
+  height: 18px !important
+  margin: 0 6px 5px 0 !important
+
+.item-field-menu
+  font-weight: bold
+
+ul.item-field-menu-container
+  background-color: white
+  overflow: auto
+  height: 600px
+
+span.dynatree-icon
+  position: relative
+  top: 3px
+
+ul.dynatree-container
+  overflow: visible // for the suggestion menu
+
+#advanced-search-tree
+  border: 1px solid $mid-gray
+  border-radius: 5px
+  background-color: $lite-gray
+  padding: 3px

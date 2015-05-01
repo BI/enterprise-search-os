@@ -1,0 +1,124 @@
+DEFAULT: &default
+
+  an_index: &an_index
+    facets:
+      field_one:
+        label: Field_One
+      field_two:
+        label: Field Two
+      range_field:
+        label: Range Field
+        range_labels:
+          - "$0 - $50K"
+          - "$50K - $100K"
+          - "$100K - $150K"
+          - "$150K - $200K"
+          - "> $200k"
+
+    facets_with_description:
+    - field_one
+
+    suggestion_fields:
+    - field_one
+    - field_two
+
+    single_value_fields:
+    - field_one
+
+    facet_panel:
+      # max terms retrieved per facet
+      max_terms_per_facet:     308
+      # number of facet terms shown or hidden by the more/less buttons
+      facet_terms_per_group:    6
+
+  # Advanced search fields
+  # IMPORTANT suggestion_field, has to be true for all numeric and date fields
+  # (see also the dynamic mapping in elastics.yml)
+
+    query_fields:
+      field_one:
+        label: Field One
+      field_two:
+        label: Field Two
+
+    # all query fields but arrays
+    export_fields:
+    - field_one
+    - field_two
+
+    query_builder_type: text
+
+    css_metric:
+      facet_panel_width: "28%"
+      result_panel_width: "69%"
+      score_bar_width: 280.0
+
+    results:
+      per_page: 20
+
+  website: *an_index
+
+  another_index:
+
+    facets:
+      field_one:
+        label: Field_One
+      field_two:
+        label: Field Two
+      report_due:
+        label: Report Due
+        range_labels:
+          - Report Past Due
+          - Report Due within Next 30 days
+          - Report Due within Next 60 days
+          - Report Due within Next 90 days
+
+    facets_with_description: []
+
+    suggestion_fields:
+    - field_one
+    - field_two
+
+    single_value_fields:
+    - field_one
+
+    facet_panel:
+      # max terms retrieved per facet
+      max_terms_per_facet:     60
+      # number of facet terms shown or hidden by the more/less buttons
+      facet_terms_per_group:    6
+
+    query_fields:
+      field_one:
+        label: Field One
+      field_two:
+        label: Field Two
+
+    # all query fields but arrays
+    export_fields:
+    - field_one
+    - field_two
+
+
+    query_builder_type: report
+
+    css_metric:
+      facet_panel_width: "19%"
+      result_panel_width: "78%"
+      score_bar_width: 280.0
+
+    results:
+      per_page: 20
+
+
+  website_start_url: http://website.com/start
+
+  enable_advanced_search: true
+
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+

@@ -1,0 +1,55 @@
+window.FacetChooser = class FacetChooser
+
+  constructor: (@panel, @facets) ->
+    @cookieName = "#{window.searchedIndex}-facet-chooser"
+    @initCookie()
+    @initFacets()
+    @initCheckboxes()
+
+
+  initCookie: =>
+    if $.cookie(@cookieName) == null
+      $.cookie(@cookieName, Object.keys(window.appSettings.facets))
+
+
+  initFacets: ->
+    active = $.cookie(@cookieName)
+    $.each @facets, (index, facet) ->
+      facet_id = facet.group.attr('id').slice(0, -6) # removes the final '_facet' from the id
+      facet.group.hide() if $.inArray(facet_id, active) == -1
+
+
+  initCheckboxes: ->
+    facets = @facets
+    active = $.cookie(@cookieName)
+    @panel.find('.facet-chooser-facet').each ->
+      checked = $.inArray( $(this).attr('id'), active) != -1
+      $(this).attr('checked', checked)
+
+      $(this).click ->
+        facetPanel.facetChooser.writeCookie()
+        facet = facets[ "#{$(this).attr('id')}_facet" ]
+        return unless facet?
+        if $(this).is(':checked')
+          facet.group.slideDown('slow')
+        else
+          facet.group.slideUp('slow')
+
+
+  writeCookie: =>
+    active = []
+    @panel.find('.facet-chooser-facet:checked').each ->
+      active.push $(this).val()
+    $.cookie(@cookieName, active)
+
+
+  toggle: =>
+    if @panel.is(':visible')
+      @panel.slideUp('slow')
+    else
+      @initCheckboxes()
+      @panel.slideDown('slow')
+
+
+
+

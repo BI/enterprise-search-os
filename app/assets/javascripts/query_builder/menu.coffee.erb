@@ -1,0 +1,148 @@
+window.Menu = class Menu
+
+  @create: (opts) ->
+    opts = $.extend
+             trigger: 'left'
+             zIndex: 100
+             position: (opt) ->
+               opt.$menu.position
+                 my: 'left top'
+                 at: 'left top'
+                 of: this
+                 collision: 'fit'
+             opts
+
+    $.contextMenu opts
+
+
+  @getNode: (opts) ->
+    $.ui.dynatree.getNode(opts.$trigger)
+
+
+  @nodeCallback: (key, opts) ->
+    node   = @getNode(opts)
+    parent = if node.data.isFolder then node else node.getParent()
+    switch key
+      when 'add_clause'
+        queryTree.addNewClause(parent)
+      when 'add_group'
+        queryTree.addNewGroup(parent)
+      when 'delete'
+        node.remove()
+        queryTree.update()
+
+
+  @menuCallback: (key, opts, labelProp, prop) ->
+    node     = @getNode(opts)
+    defaults = node.data.query.defaults()
+
+    # reset content for fields and when switch from/to QUERY clause
+    node.data.query.terms = defaults.terms if (prop == 'field') ||
+                                              (key == 'QUERY' && node.data.query.clause != 'QUERY') ||
+                                              (key != 'QUERY' && node.data.query.clause == 'QUERY')
+
+    # when switching field, switches also the clause not allowed for keywords
+    if (prop == 'field') && (node.data.query.clause == 'AND' || node.data.query.clause == 'PROX')
+      node.data.query.clause      = defaults.clause
+      node.data.query.clauseLabel = defaults.clauseLabel
+
+    label = opts.commands[key].name
+    label = 'contains ALL within ' + label if /^\d+$/.test(key)
+    node.data.query[labelProp] = label
+    node.data.query[prop] = key
+    node.render()
+    queryTree.update()
+
+
+  # disables the AND and PROX clause for keyword fields (single value fields)
+  @disableClause: (key, opts) =>
+    node = @getNode(opts)
+    $.inArray(node.data.query.field, window.appSettings.single_value_fields) != -1
+
+
+  @initMenus: ->
+
+    # node menu
+    @create
+      selector: '.dynatree-icon'
+      callback: (key, opts) =>
+        @nodeCallback(key, opts)
+      items:
+        add_clause:
+          name: 'Add Clause'
+          icon: 'add_clause'
+        add_group:
+          name: 'Add Group'
+          icon: 'add_group'
+        delete:
+          name: 'Delete'
+          icon: 'delete'
+          disabled: (key, opts) =>
+            # disabled for root node
+            @getNode(opts).data.key == 'query-root'
+
+    # group menu
+    @create
+      selector: '.group-clause-menu'
+      callback: (key, opts) =>
+        @menuCallback(key, opts, 'clauseLabel', 'clause')
+      items:
+        AND:
+          name: 'Match ALL'
+        OR:
+          name: 'Match ANY'
+        NOT:
+          name: 'Exclude ALL'
+
+    # field menu
+    @create
+      className: 'item-field-menu-container'
+      selector: '.item-field-menu'
+      callback: (key, opts) =>
+        @menuCallback(key, opts, 'fieldLabel', 'field')
+      items: window.fieldsMenu
+
+    # clause menu
+    @create
+      selector: '.item-clause-menu'
+      callback: (key, opts) =>
+        @menuCallback(key, opts, 'clauseLabel', 'clause')
+      items:
+        AND:
+          name: 'contains ALL'
+          disabled: @disableClause
+        PROX:
+          name: 'contains ALL within'
+          disabled: @disableClause
+          items:
+            1:
+              name: '1 words'
+            2:
+              name: '2 words'
+            3:
+              name: '3 words'
+            4:
+              name: '4 words'
+            5:
+              name: '5 words'
+            10:
+              name: '10 words'
+            15:
+              name: '15 words'
+            20:
+              name: '20 words'
+            30:
+              name: '30 words'
+        OR:
+          name: 'contains ANY'
+        NOT:
+          name: 'does NOT contain ANY'
+        RANGE:
+          name: 'in range FROM-TO'
+        LESS:
+          name: 'LESS than'
+        GREATER:
+          name: 'GREATER than'
+        "sep": "---------"
+        QUERY:
+          name: 'QUERY fragment (expert)'

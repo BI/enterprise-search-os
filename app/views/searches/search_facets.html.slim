@@ -1,0 +1,34 @@
+#content
+  .innerwidth
+    div style='margin-top:-10px;margin-bottom:10px;text-align:center;font-weight:bold;font-family:Arial;'
+      |
+    .flash
+    #summary.box1
+      .hd
+        .inner
+          h2.header style='display:inline-block;' Details Search
+
+      .content
+        #spinner
+
+        fieldset.filter-ui
+
+          .form-row.odd#search-panel-container
+            = render 'searches/search_form'
+
+          .form-row.odd
+            .outer
+              #notice
+              .left
+                = render 'searches/facet_panel'
+
+              .center
+                = render "searches/#{params[:searched_index]}/results"
+
+              #bottom_navigation
+                #pagination
+                  = page_entries_info @results.collection, :entry_name => 'result'
+                  = paginate(@results.collection, :page_only_url => true)
+
+      .fd
+        .inner

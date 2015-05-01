@@ -1,0 +1,8 @@
+#facet-chooser.hidden
+  ul
+    label Filter Chooser
+  - facet_names.each do |name|
+    li
+      input.facet-chooser-facet  id="#{name}" type='checkbox' value="#{name}"
+        | &nbsp;
+        = facet_label(name)

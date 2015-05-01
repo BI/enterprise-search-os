@@ -1,0 +1,48 @@
+@import ../../mixins
+
+ul.dynatree-container
+  +gray-box(0)
+  border:  none
+  height: auto
+
+ul.dynatree-container,
+ul.dynatree-container ul
+  margin: 0 !important
+
+ul.dynatree-container li
+  background-image: none
+
+span.dynatree-empty,
+span.dynatree-vline,
+span.dynatree-connector,
+span.dynatree-expander,
+span.dynatree-icon,
+span.dynatree-checkbox,
+span.dynatree-radio,
+span.dynatree-drag-helper-img,
+#dynatree-drop-marker
+  background-image: image-url('plugins/dynatree/icons.png')
+  position: relative
+  top: 1px
+
+span.dynatree-connector
+  background-image: none
+
+#dynatree-drop-marker
+  position: absolute
+
+.dynatree-loading span.dynatree-expander
+  background-image: image-url('plugins/dynatree/loading.gif')
+
+.dynatree-statusnode-wait span.dynatree-icon
+  background-image: image-url('plugins/dynatree/loading.gif')
+
+ul.dynatree-container li
+  margin-top: 2px
+
+ul.dynatree-container, ul.dynatree-container ul
+  margin-left: 3px !important
+
+span.dynatree-icon
+  cursor: pointer
+  margin-right: 5px

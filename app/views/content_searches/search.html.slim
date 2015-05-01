@@ -1,0 +1,35 @@
+#content
+  .innerwidth
+    div style='margin-top:-10px;margin-bottom:10px;text-align:center;font-weight:bold;font-family:Arial;'
+      |
+    .flash
+    #summary.box1
+      .hd
+        .inner
+          h2.header style='display:inline-block;' = @search_title
+
+      .content
+        #spinner
+        fieldset.filter-ui
+
+          .form-row.odd#search-panel-container
+            = render 'content_searches/search_form'
+
+            .form-row.odd
+              .outer
+                #notice
+                - if @results.nil?
+                  .available-total
+                    => CountCache.get(action_name)
+                    | pages available to search
+                - else
+                  .center style="width:100%;"
+                    = render 'content_searches/results'
+
+                  #bottom_navigation
+                    #pagination
+                      = page_entries_info @results.collection, :entry_name => 'result'
+                      = paginate(@results.collection)
+
+      .fd
+        .inner

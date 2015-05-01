@@ -1,0 +1,5 @@
+- opts = [ ['Project Details',                       root_path(:searched_index => 'an_index')], \
+           ['Project Details (Advanced)',            Settings.enable_advanced_search ? advanced_search_path(:searched_index => 'an_index') : '#'], \
+           ['Website',                               content_search_path(:searched_index => 'website') ] ]
+
+= select_tag :search_type_selector, options_for_select(opts, @search_path)
